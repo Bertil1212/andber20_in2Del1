@@ -1,3 +1,4 @@
+import java.text.BreakIterator;
 import java.util.Iterator;
 
 
@@ -202,85 +203,89 @@ public class DoublyLinkedList<T extends Comparable<T>> implements Iterable<T>{
     
     }
 
-    //Väldigt fin. Förmodligen extremt o effektiv 
+     
     public void addAtFirstSmaller(T t){
         ListNode<T> curnode = head;
         ListNode<T> temp = new ListNode<T>(t);
-        for(int i = size; i >= 0; i--){
-            
+        if(head == null){
+            head = temp;
+        }else{
             while(curnode.getafter() != null)
                 curnode = curnode.getafter();
 
-            do{
-                if(t.compareTo(curnode.get()) != -1){
+
+            while(true){
+           
+
+                if(curnode.get().compareTo(t) == -1){
+                    temp.setafter(curnode.getafter());
+                    temp.setbefore(curnode);
+
+                    if(curnode.getafter() != null) 
+                        curnode.getafter().setbefore(temp);
+
+                    curnode.setafter(temp);
                     break;
                 }
-                curnode = curnode.getbefore();
-            }while(curnode.getbefore() != null);
-            
 
+             if(curnode.getbefore() != null){
+                    curnode = curnode.getbefore();
+                } else{
+                    temp.setafter(head);
+                    head.setbefore(temp);
+                    head = temp;
+                    break;
+                }
+            }
         }
-        if(curnode == head && t.compareTo(head.get()) != 1){
         
-            head.setbefore(temp);
-            temp.setafter(head);
-            head = temp;
-        }else{
-            temp.setafter(curnode.getafter());
-            curnode.getafter().setbefore(temp);
-            curnode.setafter(temp);
-            temp.setbefore(curnode);
-        }
         size++;
-    }
-
-    public void insSort(){
-        for(int i = 0; i  < size; i++){
-            //System.out.println(this.removeFirst());
-            this.addAtFirstSmaller(this.removeFirst());
-        }
     }
 
 
     //Varför inte 
-    public void bogoSort(){
-        boolean sorted = false;
-        ListNode<T> curnode = head;
-        while(true){
-            
-            sorted = true;
-            for(int i = 0; i < size-2; i++){
-                if(curnode.get().compareTo(curnode.getafter().get()) == 1){
-                    sorted = false;
-                    break;
-                }
-            }
-            if(sorted)
-                break;
-            for(int i = 0; i < size; i++){
-                System.out.println(size);
-                System.out.println(this.toString());
-                T temp = this.Remove(i);
-                this.add(temp, ((int)(Math.floor(Math.random() * size))));
-                
-            }
-            
-        }
-    }
+   
 
     public static void main(String[] args) {
-        DoublyLinkedList<Integer> list = new DoublyLinkedList<>();
-        list.add(8);
-        list.add(3);
-        list.add(7);
-        
-        System.out.println(list.toString());
-        list.bogoSort();
+        int[] a = new int[10];
+        a[0] = 3;
+        a[1] = 5;
+        a[2] = 9;
+        a[3] = 2;
+        a[4] = 3;
+        a[5] = 5;
+        a[6] = 3;
+        a[7] = 7;
+        a[8] = 1;
+        a[9] = 2;
+        for(int i = 0; i < a.length; i++){
+            System.out.print(a[i] + ", ");
+        }
+        //Sortering
+        long start = System.currentTimeMillis();
+
+        DoublyLinkedList<Integer> lista = new DoublyLinkedList<>();
+        for(int i = 0; i < a.length; i++)
+            lista.addAtFirstSmaller(a[i]);
+
+        for(int i = 0; i < a.length; i++)
+            a[i] = lista.get(i);
+
+        long finish = System.currentTimeMillis();
+        long computetime = finish - start;
         
 
 
-        System.out.println(list.toString());
+
+
         
+        System.out.println("");
+        for(int i = 0; i < a.length; i++){
+            System.out.print(a[i] + ", ");
+        }
+        System.out.println("");
+        System.out.println(finish);
+        System.out.println(start);
 
     }
 
